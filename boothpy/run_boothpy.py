@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from boothpy.widget import BoothPyWidget
 from boothpy.camera import Camera
@@ -35,9 +35,27 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     cam = Camera()
-    cam.open()
+
+    ret = cam.open()
+
+    if not ret:
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Critical)
+        error_dialog.setWindowTitle('Error')
+        error_dialog.setText('Error while opening your camera! ' +
+                             'Is a camera connected?')
+        error_dialog.show()
+        sys.exit(app.exec_())
 
     w = BoothPyWidget()
 
-    cam.close()
+    ret = cam.close()
+
+    if not ret:
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Critical)
+        error_dialog.setWindowTitle('Error')
+        error_dialog.setText('Error while closing your camera!')
+        error_dialog.show()
+
     sys.exit(app.exec_())

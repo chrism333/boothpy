@@ -27,13 +27,31 @@ class Camera:
         pass
 
     def open(self):
-        self.context = gp.Context()
-        self.camera = gp.Camera()
-        self.camera.init(self.context)
-        text = self.camera.get_summary(self.context)
-        print('Summary')
-        print('=======')
-        print(str(text))
+        try:
+            context = gp.Context()
+            camera = gp.Camera()
+            camera.init(context)
+            text = camera.get_summary(context)
+            print('Summary')
+            print('=======')
+            print(str(text))
+            camera.exit(context)
+
+            self.context = context
+            self.camera = camera
+
+        except gp.GPhoto2Error as ex:
+            return False
+
+        return True
 
     def close(self):
-        self.camera.exit(self.context)
+        try:
+            self.camera.exit(self.context)
+        except gp.GPhoto2Error as ex:
+            return False
+
+        return True
+
+    def capture_preview(self):
+        self.camera.capture_preview(self.context)
