@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Copyright 2017 Christian Menard
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,13 +18,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QWidget
 
-from boothpy.widget import BoothPyWidget
 
-if __name__ == '__main__':
+class BoothPyWidget(QWidget):
 
-    app = QApplication(sys.argv)
-    w = BoothPyWidget()
-    sys.exit(app.exec_())
+    def __init__(self):
+        super().__init__()
+
+        self.init_ui()
+
+    def init_ui(self):
+        self.setGeometry(300, 300, 300, 220)
+        self.setWindowTitle('BoothPy')
+
+        self.show()

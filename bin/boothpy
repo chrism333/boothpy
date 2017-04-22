@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/bin/bash
 
 # Copyright 2017 Christian Menard
 #
@@ -20,13 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys
-from PyQt5.QtWidgets import QApplication
+script_dir=$(dirname $0)
+cd "$script_dir"
+cd ..
 
-from boothpy.widget import BoothPyWidget
-
-if __name__ == '__main__':
-
-    app = QApplication(sys.argv)
-    w = BoothPyWidget()
-    sys.exit(app.exec_())
+python3 -m boothpy.run_boothpy $@
