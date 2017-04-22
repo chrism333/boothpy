@@ -27,23 +27,34 @@ class Camera:
         pass
 
     def open(self):
-        try:
-            context = gp.Context()
-            camera = gp.Camera()
-            camera.init(context)
-            text = camera.get_summary(context)
-            print('Summary')
-            print('=======')
-            print(str(text))
-            camera.exit(context)
+        context = gp.Context()
+        camera = gp.Camera()
+        camera.init(context)
 
-            self.context = context
-            self.camera = camera
+        config = camera.get_config(context)
 
-        except gp.GPhoto2Error as ex:
-            return False
+        # find and check the image format config item
+        ok, image_format = gp.gp_widget_get_child_by_name(config,
+                                                          'imageformat')
+        if ok >= gp.GP_OK:
+            value = gp.check_result(gp.gp_widget_get_value(image_format))
+            if value == 'raw':
+                raise RuntimeError('Cannot preview raw images!')
 
-        return True
+        # find and set the capture size class config item
+        # this is required for some canon cameras and does not hurt for others
+        ok, capture_size_class = gp.gp_widget_get_child_by_name(
+                config,
+                'capturesizeclass')
+        if ok >= gp.GP_OK:
+            value = gp.check_result(gp.gp_widget_get_choice(capture_size_class,
+                                                            2))
+            gp.check_result(gp.gp_widget_set_value(capture_size_class, value))
+            gp.check_result(gp.gp_camera_set_config(camera, config, context))
+
+        self.context = context
+        self.camera = camera
+        self.config = config
 
     def close(self):
         try:
@@ -54,4 +65,6 @@ class Camera:
         return True
 
     def capture_preview(self):
-        self.camera.capture_preview(self.context)
+        camera_file = self.camera.capture_preview(self.context)
+        file_data = gp.check_result(gp.gp_file_get_data_and_size(camera_file))
+        return memoryview(file_data)

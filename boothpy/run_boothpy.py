@@ -47,7 +47,7 @@ if __name__ == '__main__':
         error_dialog.show()
         sys.exit(app.exec_())
 
-    w = BoothPyWidget()
+    w = BoothPyWidget(cam)
 
     ret = cam.close()
 

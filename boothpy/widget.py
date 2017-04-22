@@ -24,8 +24,10 @@ from PyQt5.QtGui import QPixmap
 
 class BoothPyWidget(QWidget):
 
-    def __init__(self):
+    def __init__(self, camera):
         super().__init__()
+
+        self.camera = camera
 
         self.init_ui()
 
@@ -33,8 +35,11 @@ class BoothPyWidget(QWidget):
         self.setGeometry(300, 300, 300, 220)
         self.setWindowTitle('BoothPy')
 
+        preview = self.camera.capture_preview()
+
         label = QLabel(self)
-        pixmap = QPixmap('test.jpg')
+        pixmap = QPixmap()
+        pixmap.loadFromData(preview)
         label.setPixmap(pixmap)
         self.resize(pixmap.width(), pixmap.height())
 
