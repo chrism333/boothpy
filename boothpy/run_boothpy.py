@@ -21,9 +21,9 @@
 # SOFTWARE.
 
 import sys
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication
 
-from boothpy.widget import BoothPyWidget
+from boothpy.widget import BoothPyWidget, ErrorMessage
 from boothpy.camera import Camera
 
 # terminate on signals, e.g., SIGTERM
@@ -36,26 +36,20 @@ if __name__ == '__main__':
 
     cam = Camera()
 
-    ret = cam.open()
-
-    if not ret:
-        error_dialog = QMessageBox()
-        error_dialog.setIcon(QMessageBox.Critical)
-        error_dialog.setWindowTitle('Error')
-        error_dialog.setText('Error while opening your camera! ' +
-                             'Is a camera connected?')
-        error_dialog.show()
+    try:
+        cam.open()
+    except BaseException as e:
+        err = ErrorMessage('Error while opening your Camera:', str(e))
+        err.show()
         sys.exit(app.exec_())
 
     w = BoothPyWidget(cam)
 
-    ret = cam.close()
-
-    if not ret:
-        error_dialog = QMessageBox()
-        error_dialog.setIcon(QMessageBox.Critical)
-        error_dialog.setWindowTitle('Error')
-        error_dialog.setText('Error while closing your camera!')
-        error_dialog.show()
+    try:
+        cam.close()
+    except BaseException as e:
+        err = ErrorMessage('Error while closing your Camera:', str(e))
+        err.show()
+        sys.exit(app.exec_())
 
     sys.exit(app.exec_())

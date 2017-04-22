@@ -57,12 +57,7 @@ class Camera:
         self.config = config
 
     def close(self):
-        try:
-            self.camera.exit(self.context)
-        except gp.GPhoto2Error as ex:
-            return False
-
-        return True
+        self.camera.exit(self.context)
 
     def capture_preview(self):
         camera_file = self.camera.capture_preview(self.context)

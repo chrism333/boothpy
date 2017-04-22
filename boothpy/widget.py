@@ -18,8 +18,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtWidgets import QWidget, QLabel, QMessageBox
 from PyQt5.QtGui import QPixmap
+
+
+class ErrorMessage(QMessageBox):
+
+    def __init__(self, error, description):
+        super().__init__()
+        self.setIcon(QMessageBox.Critical)
+        self.setWindowTitle('PyBooth Error')
+        self.setText(error)
+        self.setInformativeText(description)
 
 
 class BoothPyWidget(QWidget):
