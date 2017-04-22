@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from PyQt5.QtWidgets import QWidget, QLabel, QMessageBox
+from PyQt5.QtWidgets import QWidget, QLabel, QMessageBox, QApplication
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTimer, Qt
 
@@ -51,21 +51,23 @@ class BoothPyWidget(QWidget):
             preview_data = self.camera.capture_preview()
         except BaseException as e:
             err = ErrorMessage('Error while capturing preview:', str(e))
-            err.exec_()
             self.close()
+            err.exec_()
 
         self.preview = QLabel(self)
+
+        self.preview.setGeometry(QApplication.desktop().screenGeometry())
+        self.preview.setScaledContents(True)
         pixmap = QPixmap()
         pixmap.loadFromData(preview_data)
         self.preview.setPixmap(pixmap)
-        self.resize(pixmap.width(), pixmap.height())
 
         self.frame_timer = QTimer()
         self.frame_timer.timeout.connect(self.on_frame_timeout)
         self.frame_timer.setInterval(50)
         self.frame_timer.start()
 
-        self.show()
+        self.showFullScreen()
 
     def on_frame_timeout(self):
         preview_data = None
@@ -74,8 +76,8 @@ class BoothPyWidget(QWidget):
             preview_data = self.camera.capture_preview()
         except BaseException as e:
             err = ErrorMessage('Error while capturing preview:', str(e))
-            err.exec_()
             self.close()
+            err.exec_()
 
         pixmap = QPixmap()
         pixmap.loadFromData(preview_data)
