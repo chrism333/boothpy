@@ -20,6 +20,7 @@
 
 from PyQt5.QtWidgets import QWidget, QLabel, QMessageBox
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QTimer
 
 
 class ErrorMessage(QMessageBox):
@@ -45,12 +46,24 @@ class BoothPyWidget(QWidget):
         self.setGeometry(300, 300, 300, 220)
         self.setWindowTitle('BoothPy')
 
-        preview = self.camera.capture_preview()
+        preview_data = self.camera.capture_preview()
 
-        label = QLabel(self)
+        self.preview = QLabel(self)
         pixmap = QPixmap()
-        pixmap.loadFromData(preview)
-        label.setPixmap(pixmap)
+        pixmap.loadFromData(preview_data)
+        self.preview.setPixmap(pixmap)
         self.resize(pixmap.width(), pixmap.height())
 
+        self.frame_timer = QTimer()
+        self.frame_timer.timeout.connect(self.on_frame_timeout)
+        self.frame_timer.setInterval(50)
+        self.frame_timer.start()
+
         self.show()
+
+    def on_frame_timeout(self):
+        preview_data = self.camera.capture_preview()
+
+        pixmap = QPixmap()
+        pixmap.loadFromData(preview_data)
+        self.preview.setPixmap(pixmap)
