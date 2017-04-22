@@ -18,7 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtGui import QPixmap
 
 
 class BoothPyWidget(QWidget):
@@ -31,5 +32,10 @@ class BoothPyWidget(QWidget):
     def init_ui(self):
         self.setGeometry(300, 300, 300, 220)
         self.setWindowTitle('BoothPy')
+
+        label = QLabel(self)
+        pixmap = QPixmap('test.jpg')
+        label.setPixmap(pixmap)
+        self.resize(pixmap.width(), pixmap.height())
 
         self.show()
