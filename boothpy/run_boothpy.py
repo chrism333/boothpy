@@ -22,8 +22,11 @@
 
 import sys
 from PyQt5.QtWidgets import QApplication
-
 from boothpy.widget import BoothPyWidget
+
+# terminate on signals, e.g., SIGTERM
+import signal
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 if __name__ == '__main__':
 
