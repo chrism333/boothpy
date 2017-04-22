@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Copyright 2017 Christian Menard
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,24 +18,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys
-from PyQt5.QtWidgets import QApplication
+import gphoto2 as gp
 
-from boothpy.widget import BoothPyWidget
-from boothpy.camera import Camera
 
-# terminate on signals, e.g., SIGTERM
-import signal
-signal.signal(signal.SIGINT, signal.SIG_DFL)
+class Camera:
 
-if __name__ == '__main__':
+    def __init__(self):
+        pass
 
-    app = QApplication(sys.argv)
+    def open(self):
+        self.context = gp.Context()
+        self.camera = gp.Camera()
+        self.camera.init(self.context)
+        text = self.camera.get_summary(self.context)
+        print('Summary')
+        print('=======')
+        print(str(text))
 
-    cam = Camera()
-    cam.open()
-
-    w = BoothPyWidget()
-
-    cam.close()
-    sys.exit(app.exec_())
+    def close(self):
+        self.camera.exit(self.context)
