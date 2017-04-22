@@ -46,7 +46,13 @@ class BoothPyWidget(QWidget):
         self.setGeometry(300, 300, 300, 220)
         self.setWindowTitle('BoothPy')
 
-        preview_data = self.camera.capture_preview()
+        preview_data = None
+        try:
+            preview_data = self.camera.capture_preview()
+        except BaseException as e:
+            err = ErrorMessage('Error while capturing preview:', str(e))
+            err.exec_()
+            self.close()
 
         self.preview = QLabel(self)
         pixmap = QPixmap()
@@ -62,7 +68,14 @@ class BoothPyWidget(QWidget):
         self.show()
 
     def on_frame_timeout(self):
-        preview_data = self.camera.capture_preview()
+        preview_data = None
+
+        try:
+            preview_data = self.camera.capture_preview()
+        except BaseException as e:
+            err = ErrorMessage('Error while capturing preview:', str(e))
+            err.exec_()
+            self.close()
 
         pixmap = QPixmap()
         pixmap.loadFromData(preview_data)
