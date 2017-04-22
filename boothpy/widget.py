@@ -20,7 +20,7 @@
 
 from PyQt5.QtWidgets import QWidget, QLabel, QMessageBox
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
 
 
 class ErrorMessage(QMessageBox):
@@ -80,3 +80,8 @@ class BoothPyWidget(QWidget):
         pixmap = QPixmap()
         pixmap.loadFromData(preview_data)
         self.preview.setPixmap(pixmap)
+
+    def keyPressEvent(self, e):
+
+        if e.key() == Qt.Key_Escape:
+            self.close()
