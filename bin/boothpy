@@ -24,4 +24,4 @@ script_dir=$(dirname $0)
 cd "$script_dir"
 cd ..
 
-python3 -m boothpy.run_boothpy $@
+python3 -m boothpy.__main__ $@

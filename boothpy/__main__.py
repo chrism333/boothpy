@@ -30,8 +30,7 @@ from boothpy.camera import Camera
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-if __name__ == '__main__':
-
+def main():
     app = QApplication(sys.argv)
 
     cam = Camera()
@@ -53,3 +52,7 @@ if __name__ == '__main__':
         sys.exit(app.exec_())
 
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
