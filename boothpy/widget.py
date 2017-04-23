@@ -46,30 +46,24 @@ class BoothPyWidget(QWidget):
         self.setGeometry(300, 300, 300, 220)
         self.setWindowTitle('BoothPy')
 
-        preview_data = None
-        try:
-            preview_data = self.camera.capture_preview()
-        except BaseException as e:
-            err = ErrorMessage('Error while capturing preview:', str(e))
-            self.close()
-            err.exec_()
-
         self.preview = QLabel(self)
-
         self.preview.setGeometry(QApplication.desktop().screenGeometry())
         self.preview.setScaledContents(True)
-        pixmap = QPixmap()
-        pixmap.loadFromData(preview_data)
-        self.preview.setPixmap(pixmap)
 
-        self.frame_timer = QTimer()
-        self.frame_timer.timeout.connect(self.on_frame_timeout)
-        self.frame_timer.setInterval(50)
-        self.frame_timer.start()
+        self.preview_frame_timer = QTimer()
+        self.preview_frame_timer.timeout.connect(self.on_preview_frame_timeout)
+        self.preview_frame_timer.setInterval(50)
 
         self.showFullScreen()
+        self.enable_preview()
 
-    def on_frame_timeout(self):
+    def enable_preview(self):
+        self.preview_frame_timer.start()
+
+    def disable_preview(self):
+        self.preview_frame_timer.stop()
+
+    def on_preview_frame_timeout(self):
         preview_data = None
 
         try:
