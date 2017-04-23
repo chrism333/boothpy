@@ -54,6 +54,9 @@ class BoothPyWidget(QWidget):
         self.preview_frame_timer.timeout.connect(self.on_preview_frame_timeout)
         self.preview_frame_timer.setInterval(50)
 
+        self.display_image_timer = QTimer()
+        self.display_image_timer.timeout.connect(self.on_display_image_timeout)
+
         self.showFullScreen()
         self.enable_preview()
 
@@ -83,6 +86,9 @@ class BoothPyWidget(QWidget):
         pixmap.loadFromData(preview_data)
         self.preview.setPixmap(pixmap)
 
+    def on_display_image_timeout(self):
+        self.enable_preview()
+
     def keyPressEvent(self, e):
 
         if e.key() == Qt.Key_Escape:
@@ -92,10 +98,13 @@ class BoothPyWidget(QWidget):
             self.disable_preview()
 
             try:
-                self.camera.capture_image()
+                image_path = self.camera.capture_image()
+                pixmap = QPixmap()
+                pixmap.load(image_path)
+                self.preview.setPixmap(pixmap)
+
+                self.display_image_timer.start(2000)
             except BaseException as e:
                 err = ErrorMessage('Error while capturing image:', str(e))
                 self.close()
                 err.exec_()
-
-            self.enable_preview()

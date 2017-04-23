@@ -73,3 +73,4 @@ class Camera:
                                            gp.GP_FILE_TYPE_NORMAL,
                                            self.context)
         gp.check_result(gp.gp_file_save(camera_file, target))
+        return target
