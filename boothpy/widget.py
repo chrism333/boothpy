@@ -87,3 +87,11 @@ class BoothPyWidget(QWidget):
 
         if e.key() == Qt.Key_Escape:
             self.close()
+
+        if e.key() == Qt.Key_Return or e.key() == Qt.Key_Space:
+            try:
+                self.camera.capture_image()
+            except BaseException as e:
+                err = ErrorMessage('Error while capturing image:', str(e))
+                self.close()
+                err.exec_()

@@ -19,6 +19,7 @@
 # SOFTWARE.
 
 import gphoto2 as gp
+import os
 
 
 class Camera:
@@ -63,3 +64,12 @@ class Camera:
         camera_file = self.camera.capture_preview(self.context)
         file_data = gp.check_result(gp.gp_file_get_data_and_size(camera_file))
         return memoryview(file_data)
+
+    def capture_image(self):
+        file_path = self.camera.capture(gp.GP_CAPTURE_IMAGE, self.context)
+        target = os.path.join('/tmp', file_path.name)
+        camera_file = self.camera.file_get(file_path.folder,
+                                           file_path.name,
+                                           gp.GP_FILE_TYPE_NORMAL,
+                                           self.context)
+        gp.check_result(gp.gp_file_save(camera_file, target))
