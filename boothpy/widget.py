@@ -19,7 +19,7 @@
 # SOFTWARE.
 
 from PyQt5.QtWidgets import QWidget, QLabel, QMessageBox, QApplication
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QColor
 from PyQt5.QtCore import QTimer, Qt
 
 
@@ -63,6 +63,12 @@ class BoothPyWidget(QWidget):
     def disable_preview(self):
         self.preview_frame_timer.stop()
 
+        # switch to black frame
+        pixmap = QPixmap(100, 100)
+        pixmap.fill(QColor(0, 0, 0))
+        self.preview.setPixmap(pixmap)
+        self.repaint()
+
     def on_preview_frame_timeout(self):
         preview_data = None
 
@@ -83,9 +89,13 @@ class BoothPyWidget(QWidget):
             self.close()
 
         if e.key() == Qt.Key_Return or e.key() == Qt.Key_Space:
+            self.disable_preview()
+
             try:
                 self.camera.capture_image()
             except BaseException as e:
                 err = ErrorMessage('Error while capturing image:', str(e))
                 self.close()
                 err.exec_()
+
+            self.enable_preview()
