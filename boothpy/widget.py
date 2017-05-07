@@ -51,6 +51,9 @@ class BoothPyWidget(QWidget):
 
         self.preview = QLabel(self)
         self.preview.setGeometry(self.dg)
+        self.preview.setStyleSheet(
+                'QLabel { background-color : black; color : black; }')
+        self.preview.setAlignment(Qt.AlignCenter)
 
         self.preview_frame_timer = QTimer()
         self.preview_frame_timer.timeout.connect(self.on_preview_frame_timeout)
