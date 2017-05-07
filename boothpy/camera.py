@@ -24,8 +24,8 @@ import os
 
 class Camera:
 
-    def __init__(self):
-        pass
+    def __init__(self, args):
+        self.args = args
 
     def open(self):
         context = gp.Context()
@@ -67,7 +67,7 @@ class Camera:
 
     def capture_image(self):
         file_path = self.camera.capture(gp.GP_CAPTURE_IMAGE, self.context)
-        target = os.path.join('/tmp', file_path.name)
+        target = os.path.join(self.args.directory, file_path.name)
         camera_file = self.camera.file_get(file_path.folder,
                                            file_path.name,
                                            gp.GP_FILE_TYPE_NORMAL,

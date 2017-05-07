@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import sys
+import argparse
 from PyQt5.QtWidgets import QApplication
 
 from boothpy.widget import BoothPyWidget, ErrorMessage
@@ -30,10 +31,18 @@ from boothpy.camera import Camera
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
+
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--directory', type=str, default='/tmp',
+                        help='Set the directory where captured images should' +
+                             'be stored. Default is /tmp')
+
+    args = parser.parse_args()
+
     app = QApplication(sys.argv)
 
-    cam = Camera()
+    cam = Camera(args)
 
     try:
         cam.open()
