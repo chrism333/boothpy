@@ -40,6 +40,9 @@ class BoothPyWidget(QWidget):
 
         self.camera = camera
 
+        # store the desktop geometry
+        self.dg = QApplication.desktop().screenGeometry()
+
         self.init_ui()
 
     def init_ui(self):
@@ -47,8 +50,7 @@ class BoothPyWidget(QWidget):
         self.setWindowTitle('BoothPy')
 
         self.preview = QLabel(self)
-        self.preview.setGeometry(QApplication.desktop().screenGeometry())
-        self.preview.setScaledContents(True)
+        self.preview.setGeometry(self.dg)
 
         self.preview_frame_timer = QTimer()
         self.preview_frame_timer.timeout.connect(self.on_preview_frame_timeout)
@@ -67,10 +69,9 @@ class BoothPyWidget(QWidget):
         self.preview_frame_timer.stop()
 
         # switch to black frame
-        pixmap = QPixmap(100, 100)
+        pixmap = QPixmap(self.dg.width(), self.dg.height())
         pixmap.fill(QColor(0, 0, 0))
-        self.preview.setPixmap(pixmap)
-        self.repaint()
+        self.show_pixmap(pixmap)
 
     def on_preview_frame_timeout(self):
         preview_data = None
@@ -92,10 +93,18 @@ class BoothPyWidget(QWidget):
 
         pixmap = QPixmap()
         pixmap.loadFromData(preview_data)
-        self.preview.setPixmap(pixmap)
+        self.show_pixmap(pixmap)
 
     def on_display_image_timeout(self):
         self.enable_preview()
+
+    def show_pixmap(self, pixmap):
+        scaled = pixmap.scaled(self.dg.width(),
+                               self.dg.height(),
+                               Qt.KeepAspectRatio,
+                               transformMode=Qt.SmoothTransformation)
+        self.preview.setPixmap(scaled)
+        self.repaint()
 
     def keyPressEvent(self, e):
 
@@ -109,7 +118,7 @@ class BoothPyWidget(QWidget):
                 image_path = self.camera.capture_image()
                 pixmap = QPixmap()
                 pixmap.load(image_path)
-                self.preview.setPixmap(pixmap)
+                self.show_pixmap(pixmap)
 
                 self.display_image_timer.start(2000)
             except BaseException as e:
