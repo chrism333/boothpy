@@ -75,12 +75,20 @@ class BoothPyWidget(QWidget):
     def on_preview_frame_timeout(self):
         preview_data = None
 
+        # Stop the timer and restart after capturing the preview frame.
+        # If w don't stop the timer, we and up with multiple error messages
+        # on preview timeout.
+        self.preview_frame_timer.stop()
+
         try:
             preview_data = self.camera.capture_preview()
         except BaseException as e:
+            self.disable_preview()
             err = ErrorMessage('Error while capturing preview:', str(e))
             self.close()
             err.exec_()
+
+        self.preview_frame_timer.start()
 
         pixmap = QPixmap()
         pixmap.loadFromData(preview_data)
