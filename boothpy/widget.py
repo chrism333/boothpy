@@ -95,7 +95,8 @@ class BoothPyWidget(QWidget):
         self.preview_frame_timer.start()
 
         pixmap = QPixmap()
-        pixmap.loadFromData(preview_data)
+        if preview_data is not None:
+            pixmap.loadFromData(preview_data)
         self.show_pixmap(pixmap)
 
     def on_display_image_timeout(self):

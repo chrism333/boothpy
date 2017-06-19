@@ -26,6 +26,7 @@ from PyQt5.QtWidgets import QApplication
 
 from boothpy.widget import BoothPyWidget, ErrorMessage
 from boothpy.camera import Camera
+from boothpy.camera import DummyCamera
 
 # terminate on signals, e.g., SIGTERM
 import signal
@@ -37,12 +38,17 @@ def main():
     parser.add_argument('-d', '--directory', type=str, default='/tmp',
                         help='Set the directory where captured images should' +
                              'be stored. Default is /tmp')
+    parser.add_argument('-t', '--try-mode', action='store_true', default=False,
+                        help='start without connecting to a camera')
 
     args = parser.parse_args()
 
     app = QApplication(sys.argv)
 
-    cam = Camera(args)
+    if args.try_mode:
+        cam = DummyCamera(args)
+    else:
+        cam = Camera(args)
 
     try:
         cam.open()

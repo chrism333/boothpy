@@ -20,6 +20,7 @@
 
 import gphoto2 as gp
 import os
+from shutil import copyfile
 
 
 class Camera:
@@ -74,3 +75,25 @@ class Camera:
                                            self.context)
         gp.check_result(gp.gp_file_save(camera_file, target))
         return target
+
+
+class DummyCamera:
+
+    def __init__(self, args):
+        self.i = 0
+        self.args = args
+
+    def open(self):
+        pass
+
+    def close(self):
+        pass
+
+    def capture_preview(self):
+        return None
+
+    def capture_image(self):
+        target = os.path.join(self.args.directory, 'test_%d.jpg' % self.i)
+        self.i += 1
+        copyfile('test.jpg', target)
+        return 'test.jpg'
