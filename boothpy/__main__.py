@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
 import sys
 import argparse
 from PyQt5.QtWidgets import QApplication
@@ -49,6 +50,10 @@ def main():
         cam = DummyCamera(args)
     else:
         cam = Camera(args)
+
+    if not os.path.isdir(args.directory):
+        raise RuntimeError('Output directory %s does not exist!' %
+                           args.directory)
 
     try:
         cam.open()
