@@ -67,14 +67,36 @@ class Camera:
         return memoryview(file_data)
 
     def capture_image(self):
-        file_path = self.camera.capture(gp.GP_CAPTURE_IMAGE, self.context)
-        target = os.path.join(self.args.directory, file_path.name)
-        camera_file = self.camera.file_get(file_path.folder,
-                                           file_path.name,
-                                           gp.GP_FILE_TYPE_NORMAL,
-                                           self.context)
-        gp.check_result(gp.gp_file_save(camera_file, target))
-        return target
+        self.camera.trigger_capture(self.context)
+
+        raw_file_path = None
+        jpeg_file_path = None
+        while True:
+            etype, value = self.camera.wait_for_event(1000, self.context)
+            if etype == gp.GP_EVENT_FILE_ADDED:
+                if raw_file_path is None and self.args.raw:
+                    raw_file_path = value
+                else:
+                    print(value.name)
+                    jpeg_file_path = value
+                    break
+
+        if raw_file_path is not None:
+            raw_target = os.path.join(self.args.directory, raw_file_path.name)
+            raw_camera_file = self.camera.file_get(raw_file_path.folder,
+                                                   raw_file_path.name,
+                                                   gp.GP_FILE_TYPE_NORMAL,
+                                                   self.context)
+            gp.check_result(gp.gp_file_save(raw_camera_file, raw_target))
+
+        jpeg_target = os.path.join(self.args.directory, jpeg_file_path.name)
+        jpeg_camera_file = self.camera.file_get(jpeg_file_path.folder,
+                                                jpeg_file_path.name,
+                                                gp.GP_FILE_TYPE_NORMAL,
+                                                self.context)
+        gp.check_result(gp.gp_file_save(jpeg_camera_file, jpeg_target))
+
+        return jpeg_target
 
 
 class DummyCamera:

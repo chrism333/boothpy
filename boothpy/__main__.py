@@ -41,6 +41,8 @@ def main():
                              'be stored. Default is /tmp')
     parser.add_argument('-t', '--try-mode', action='store_true', default=False,
                         help='start without connecting to a camera')
+    parser.add_argument('-r', '--raw', action='store_true', default=False,
+                        help='capture and store raw (works only if the camera is setup to raw+jpeg)')
 
     args = parser.parse_args()
 
