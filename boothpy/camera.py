@@ -96,7 +96,12 @@ class Camera:
                                                 self.context)
         gp.check_result(gp.gp_file_save(jpeg_camera_file, jpeg_target))
 
-        return jpeg_target
+        if os.path.splitext(jpeg_target)[1] == 'jpg' or \
+           os.path.splitext(jpeg_target)[1] == 'JPG':
+            return jpeg_target
+        else:   # XXX on some cameras we get a JPEG first, then the raw_target
+                # variable stores out jpeg
+            return raw_target
 
 
 class DummyCamera:
